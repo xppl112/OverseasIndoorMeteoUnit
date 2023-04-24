@@ -1,0 +1,11 @@
+#pragma once
+
+   enum class View {
+      STANDARD,
+      DETAILED_RADIATION, 
+      DETAILED_PM, 
+      DETAILED_VOC, 
+      DETAILED_INDOOR_TEMPERATURE, 
+      DETAILED_INDOOR_HUMIDITY, 
+      DETAILED_OUTDOOR_RAIN, 
+      DETAILED_PRESSURE};
