@@ -1,13 +1,13 @@
 #pragma once
 
 #include <vector>
-#include "Models/WeatherMonitorData.h"
+#include "Models/IndoorWeatherData.h"
 #include "Models/Enums/WarningLevel.h"
 
-struct PresentingWeatherData
+struct PresentingIndoorWeatherData
 {
 public:
-    std::vector<WeatherMonitorData> weatherMonitorHistoricalData;
+    std::vector<IndoorWeatherData> weatherMonitorHistoricalData;
 
     WarningLevel RadiationWarningLevel = WarningLevel::UNKNOWN;
     WarningLevel PMWarningLevel = WarningLevel::UNKNOWN;

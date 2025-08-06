@@ -16,6 +16,13 @@ public:
 
   bool connectWifi(const char* ssid, const char* password, uint8_t timeoutSeconds = 10);
   void disconnectWifi();  
+  void startAccessPoint(const char* ssid, 
+    const char* password, 
+    bool hidden,
+    IPAddress apIP,
+    IPAddress gateway,
+    IPAddress subnet);
+  void stopAccessPoint();
 
   HttpResponse sendGetRequest(String host, String resource, uint8_t timeoutSeconds = 10);
   HttpResponse sendPostJsonRequest(String host, String resource, String jsonPayload, uint8_t timeoutSeconds = 10);

@@ -30,7 +30,7 @@ LEDIndicatorsController::LEDIndicatorsController(HardwareRegistry* hardwareRegis
     setStandbyMode(false);
 }
 
-void LEDIndicatorsController::setWeatherStatus(PresentingWeatherData data){
+void LEDIndicatorsController::setWeatherStatus(PresentingIndoorWeatherData data){
     auto weatherData = data.weatherMonitorHistoricalData.back();
 
     int pm = weatherData.PM_2_5;
@@ -46,9 +46,8 @@ void LEDIndicatorsController::setWeatherStatus(PresentingWeatherData data){
     else setRGBLedColor(RGBLedColor::GREEN, _globalState->isDark());
 }
 
-void LEDIndicatorsController::setWeatherStatus(PresentingBackendWeatherData data){  
-    auto weatherData = data.backendWeatherHistoricalData.back();
-    setRainLed(weatherData.getRainLevel());
+void LEDIndicatorsController::setWeatherStatus(PresentingOutdoorWeatherData data){  
+    setRainLed(data.weatherData.getRainLevel());
 }
 
 void LEDIndicatorsController::setRGBLedColor(RGBLedColor color, bool isDimmed){

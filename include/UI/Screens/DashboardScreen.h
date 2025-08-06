@@ -1,8 +1,8 @@
 #ifndef DashboardScreen_H
 #define DashboardScreen_H
 
-#include "Models/PresentingWeatherData.h"
-#include "Models/PresentingBackendWeatherData.h"
+#include "Models/PresentingIndoorWeatherData.h"
+#include "Models/PresentingOutdoorWeatherData.h"
 #include <Adafruit_SSD1306.h>
 
 class DashboardScreen
@@ -10,8 +10,8 @@ class DashboardScreen
 public:
     DashboardScreen(Adafruit_SSD1306* screen);
 
-    void showWeatherData(PresentingWeatherData weatherData);
-    void showBackendWeatherData(PresentingBackendWeatherData backendWeatherData);
+    void showWeatherData(PresentingIndoorWeatherData weatherData);
+    void showOutdoorWeatherData(PresentingOutdoorWeatherData outdoorWeatherData);
 
 private:
     Adafruit_SSD1306* _screen;

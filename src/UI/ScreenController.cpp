@@ -29,7 +29,7 @@ void ScreenController::clearLedScreens(){
     _ledScreenBottom->clear();
 }
 
-void ScreenController::showDataScreen(View view, PresentingWeatherData weatherData, bool isOledActive){
+void ScreenController::showDataScreen(View view, PresentingIndoorWeatherData weatherData, bool isOledActive){
     auto data = weatherData.weatherMonitorHistoricalData.back();
 
     //Dasha's wish :)
@@ -66,10 +66,10 @@ void ScreenController::showDataScreen(View view, PresentingWeatherData weatherDa
     }
 }
 
-void ScreenController::showDataScreen(View view, PresentingBackendWeatherData backendWeatherData, bool isOledActive){
-    auto data = backendWeatherData.backendWeatherHistoricalData.back();
+void ScreenController::showDataScreen(View view, PresentingOutdoorWeatherData outdoorWeatherData, bool isOledActive){
+    auto data = outdoorWeatherData.weatherData;
     
-    _ledScreenTop->printDecimalWithUnit(data.temperatureCelsium, 'c');
+    _ledScreenTop->printDecimalWithUnit(data.temperature, 'c');
 
     switch(view){
         case View::STANDARD:
@@ -89,7 +89,7 @@ void ScreenController::showDataScreen(View view, PresentingBackendWeatherData ba
             if(isOledActive)showMeasurementUnit("Rain", "%");
             break;
         case View::DETAILED_PRESSURE:
-            _ledScreenMiddle->printInt((int)data.pressureInHPascals);
+            _ledScreenMiddle->printInt((int)data.pressure);
             if(isOledActive)showMeasurementUnit("Pressure", "hPa");
             break;
     }
@@ -113,7 +113,7 @@ void ScreenController::showNetworkStatusIcon(NetworkStatus status){
     _screen->display();
 }
 
-void ScreenController::showRadiationGraph(PresentingWeatherData weatherData){
+void ScreenController::showRadiationGraph(PresentingIndoorWeatherData weatherData){
     clearScreen();
     double maxValue = 0.0;
     for(unsigned int i = 0; i < weatherData.weatherMonitorHistoricalData.size(); i++){

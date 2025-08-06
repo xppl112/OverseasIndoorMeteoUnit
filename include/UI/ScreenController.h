@@ -1,8 +1,8 @@
 #include "HardwareModules/HardwareRegistry.h"
 #include "HardwareModules/OLEDScreen.h"
 #include "HardwareModules/LEDDigitalScreen.h"
-#include "Models/PresentingWeatherData.h"
-#include "Models/PresentingBackendWeatherData.h"
+#include "Models/PresentingIndoorWeatherData.h"
+#include "Models/PresentingOutdoorWeatherData.h"
 #include "Models/Enums/NetworkStatus.h"
 #include "Models/Enums/View.h"
 #include "GlobalObjects/GlobalState.h"
@@ -13,12 +13,12 @@ public:
     ScreenController(HardwareRegistry* hardwareRegistry, GlobalState* globalState);
     void clearScreen();
     void clearLedScreens();
-    void showDataScreen(View view, PresentingWeatherData weatherData, bool isOledActive);
-    void showDataScreen(View view, PresentingBackendWeatherData backendWeatherData, bool isOledActive);    
+    void showDataScreen(View view, PresentingIndoorWeatherData weatherData, bool isOledActive);
+    void showDataScreen(View view, PresentingOutdoorWeatherData outdoorWeatherData, bool isOledActive);    
     void showNetworkStatusIcon(NetworkStatus status);
     void showInfoScreen(String title, String text);
 
-    void showRadiationGraph(PresentingWeatherData weatherData);
+    void showRadiationGraph(PresentingIndoorWeatherData weatherData);
 
     void setLedScreensBrightness(int percent);
     void blinkRadiation();

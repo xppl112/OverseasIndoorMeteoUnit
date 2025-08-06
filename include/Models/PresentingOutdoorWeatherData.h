@@ -1,13 +1,13 @@
 #pragma once
 
 #include <vector>
-#include "Models/BackendWeatherData.h"
+#include "Models/OutdoorWeatherData.h"
 #include "Models/Enums/WarningLevel.h"
 
-struct PresentingBackendWeatherData
+struct PresentingOutdoorWeatherData
 {
 public:
-    std::vector<BackendWeatherData> backendWeatherHistoricalData;
+    OutdoorWeatherData weatherData;
 
     WarningLevel WindWarningLevel = WarningLevel::UNKNOWN;
     WarningLevel RainWarningLevel = WarningLevel::UNKNOWN;

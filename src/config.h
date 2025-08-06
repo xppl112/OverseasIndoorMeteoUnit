@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "PCF8575.h"
+#include <IPAddress.h>
 
 #ifndef CONFIG_H
 #define CONFIG_H
@@ -49,12 +50,19 @@ const uint8_t OLED_I2C_ADDR = 0x3C;
 const uint8_t IO_I2C_ADDR = 0x20;
 
 struct BackendClientConfig {
-    const char* WifiSSID = "BELL763";
-    const char* WifiPassword = "";
+    const char* WifiSSID = "BELL763_EXT";
+    const char* WifiPassword = "2A661A965E9E";
     const int WifiConnectionTimeout = 20;
 
-    const char* ServerHost = "http://weather.liashko.space";
-    const char* ServerApiPostWeatherDataUrl = "/api/weather/PostOverseasIndoorReport";
+    const char* AP_SSID = "WeatherStationIndoorUnit";
+    const char* AP_Password = "AP1326AT";
+    IPAddress AP_IP = IPAddress(192, 168, 4, 1);
+    IPAddress AP_GATEWAY = IPAddress(192, 168, 4, 1);
+    IPAddress AP_SUBNET = IPAddress(255, 255, 255, 0);
+
+    const char* ServerHost = "http://weather.liashko.online";
+    const char* ServerApiPostIndoorWeatherDataUrl = "/api/weather/PostOverseasIndoorReport";
+    const char* ServerApiPostOutdoorWeatherDataUrl = "/api/weather/PostOverseasReport";
     const int HttpRequestTimeout = 10;
 };
 

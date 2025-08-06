@@ -17,8 +17,8 @@ UIController::UIController(HardwareRegistry* HardwareRegistry, GlobalState* glob
     _lightCheckTimer->start();
 
     //Draw splash data
-    onPresentingWeatherDataUpdate(_currentPresentingWeatherData);
-    onPresentingBackendWeatherDataUpdate(_currentPresentingBackendWeatherData);
+    onPresentingIndoorWeatherDataUpdate(_currentPresentingIndoorWeatherData);
+    onPresentingOutdoorWeatherDataUpdate(_currentPresentingOutdoorWeatherData);
     onNetworkStatusChange(NetworkStatus::DISABLED);
     _screen->showInfoScreen("Starting", "Performing\nmeasurements...");
 }
@@ -72,23 +72,23 @@ void UIController::updateInputs() {
     }
 }
 
-void UIController::onPresentingWeatherDataUpdate(PresentingWeatherData presentingWeatherData){
+void UIController::onPresentingIndoorWeatherDataUpdate(PresentingIndoorWeatherData presentingIndoorWeatherData){
     #ifdef DEBUG
-    Serial.print("onPresentingWeatherDataUpdate. Data count: ");Serial.println(presentingWeatherData.weatherMonitorHistoricalData.size());
+    Serial.print("onPresentingIndoorWeatherDataUpdate. Data count: ");Serial.println(presentingIndoorWeatherData.weatherMonitorHistoricalData.size());
     #endif
-    _currentPresentingWeatherData = presentingWeatherData;
-    if(presentingWeatherData.weatherMonitorHistoricalData.size() == 0)return;
+    _currentPresentingIndoorWeatherData = presentingIndoorWeatherData;
+    if(presentingIndoorWeatherData.weatherMonitorHistoricalData.size() == 0)return;
     
-    auto warningLevel = _currentPresentingWeatherData.GetOverallWarningLevel();
+    auto warningLevel = _currentPresentingIndoorWeatherData.GetOverallWarningLevel();
 
     if(warningLevel > WarningLevel::LOW_WARNING_LEVEL){
         //Warning appear
         _isWarning = true;
         _isOledActive = true;
         _oledIdleTimer->start();
-        if(_currentPresentingWeatherData.RadiationWarningLevel > WarningLevel::LOW_WARNING_LEVEL)_currentView = View::DETAILED_RADIATION;
-        else if(_currentPresentingWeatherData.PMWarningLevel > WarningLevel::LOW_WARNING_LEVEL)_currentView = View::DETAILED_PM;
-        else if(_currentPresentingWeatherData.VOCWarningLevel > WarningLevel::LOW_WARNING_LEVEL)_currentView = View::DETAILED_VOC;
+        if(_currentPresentingIndoorWeatherData.RadiationWarningLevel > WarningLevel::LOW_WARNING_LEVEL)_currentView = View::DETAILED_RADIATION;
+        else if(_currentPresentingIndoorWeatherData.PMWarningLevel > WarningLevel::LOW_WARNING_LEVEL)_currentView = View::DETAILED_PM;
+        else if(_currentPresentingIndoorWeatherData.VOCWarningLevel > WarningLevel::LOW_WARNING_LEVEL)_currentView = View::DETAILED_VOC;
         
         _globalState->lightLevelPercent = 100;
         updateScreensBrightness();
@@ -112,28 +112,28 @@ void UIController::onPresentingWeatherDataUpdate(PresentingWeatherData presentin
     }
 }
 
-void UIController::onPresentingBackendWeatherDataUpdate(PresentingBackendWeatherData presentingBackendWeatherData){
+void UIController::onPresentingOutdoorWeatherDataUpdate(PresentingOutdoorWeatherData presentingOutdoorWeatherData){
     #ifdef DEBUG
-    Serial.print("onPresentingBackendWeatherDataUpdate. Data count: ");Serial.println(presentingBackendWeatherData.backendWeatherHistoricalData.size());
+    Serial.print("onPresentingOutdoorWeatherDataUpdate.");
     #endif
 
-   _currentPresentingBackendWeatherData = presentingBackendWeatherData;
-    if(presentingBackendWeatherData.backendWeatherHistoricalData.size() == 0)return;
+   _currentPresentingOutdoorWeatherData = presentingOutdoorWeatherData;
+    if(presentingOutdoorWeatherData.weatherData.temperature == -100.0f)return;
     
     if(!_isStandby){
-        presentBackendWeatherData();
+        presentOutdoorWeatherData();
     }
 }
 
 void UIController::presentWeatherData(){
-    _ledIndicators->setWeatherStatus(_currentPresentingWeatherData);
+    _ledIndicators->setWeatherStatus(_currentPresentingIndoorWeatherData);
     _screen->clearScreen();
-    _screen->showDataScreen(_currentView, _currentPresentingWeatherData, _isOledActive);
+    _screen->showDataScreen(_currentView, _currentPresentingIndoorWeatherData, _isOledActive);
 }
 
-void UIController::presentBackendWeatherData(){
-    _ledIndicators->setWeatherStatus(_currentPresentingBackendWeatherData);
-    _screen->showDataScreen(_currentView, _currentPresentingBackendWeatherData, _isOledActive);
+void UIController::presentOutdoorWeatherData(){
+    _ledIndicators->setWeatherStatus(_currentPresentingOutdoorWeatherData);
+    _screen->showDataScreen(_currentView, _currentPresentingOutdoorWeatherData, _isOledActive);
 }
 
 void UIController::onNetworkStatusChange(NetworkStatus networkStatus){
@@ -153,14 +153,14 @@ void UIController::changeStandby(bool standby){
     }
     else {
         presentWeatherData();
-        presentBackendWeatherData();
+        presentOutdoorWeatherData();
     }
 }
 
 void UIController::toggleSoundEnabling(){
     if(_isAlert && !_isAlertBypassed){
         _isAlertBypassed = true;
-        _soundController->setWarningLevel(_currentPresentingWeatherData.GetOverallWarningLevel(), _isAlertBypassed);
+        _soundController->setWarningLevel(_currentPresentingIndoorWeatherData.GetOverallWarningLevel(), _isAlertBypassed);
     }
     else {
         _isSoundEnabled = !_isSoundEnabled;
@@ -177,7 +177,7 @@ void UIController::changeView(View view){
     _oledIdleTimer->start();
     
     presentWeatherData();
-    presentBackendWeatherData();
+    presentOutdoorWeatherData();
 }
 
 void UIController::changeView(){
@@ -190,7 +190,7 @@ void UIController::changeView(){
 void UIController::updateScreensBrightness(){
     if(!_isStandby){
         _screen->setLedScreensBrightness(_globalState->lightLevelPercent);
-        _ledIndicators->setWeatherStatus(_currentPresentingWeatherData);
+        _ledIndicators->setWeatherStatus(_currentPresentingIndoorWeatherData);
     }
 }
 

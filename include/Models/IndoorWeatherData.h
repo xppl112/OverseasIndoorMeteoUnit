@@ -20,7 +20,7 @@ enum class GasLevel {
     Hazardous = 90
 };
 
-struct WeatherMonitorData
+struct IndoorWeatherData
 {
 public:
     unsigned long timestamp;
