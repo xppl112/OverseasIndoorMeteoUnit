@@ -34,7 +34,7 @@ void WeatherMonitor::updateTimers(){
     }
 }
 
-void WeatherMonitor::addWeatherUpdatedEventHandler(WeatherMonitorUpdatedEventCallback callback){
+void WeatherMonitor::addUpdatedEventHandler(WeatherMonitorUpdatedEventCallback callback){
     _onUpdateCallback = callback;
 }
 
@@ -49,7 +49,7 @@ void WeatherMonitor::finishMeasuring(bool runWithoutStart){
     #ifdef DEBUG
     Serial.println("finishMeasuring execution");
     #endif
-    IndoorWeatherData data;
+    WeatherMonitorData data;
     data.timestamp = millis();
 
     AirParticiplesSensorData airParticiplesData;
@@ -80,31 +80,31 @@ void WeatherMonitor::finishMeasuring(bool runWithoutStart){
     registerWeatherData(data);
 }
 
-void WeatherMonitor::registerWeatherData(IndoorWeatherData data){
+void WeatherMonitor::registerWeatherData(WeatherMonitorData data){
     _weatherMonitorHistoricalData.push_back(data);
     if(_weatherMonitorHistoricalData.size() > DATA_COLLECTION_CAPACITY){
         _weatherMonitorHistoricalData.erase(_weatherMonitorHistoricalData.begin());
     }
 
     if(_onUpdateCallback != NULL){
-        PresentingIndoorWeatherData PresentingIndoorWeatherData {
+        PresentingWeatherData PresentingWeatherData {
             .weatherMonitorHistoricalData = _weatherMonitorHistoricalData
         };
 
-        if(data.PM_2_5 >= _globalState->configuration.PM2_5_Level_Alert) PresentingIndoorWeatherData.PMWarningLevel = WarningLevel::HI_WARNING_LEVEL;
-        else if(data.PM_2_5 >= _globalState->configuration.PM2_5_Level_Warning) PresentingIndoorWeatherData.PMWarningLevel = WarningLevel::WARNING;
-        else if(data.PM_2_5 != -1) PresentingIndoorWeatherData.PMWarningLevel = WarningLevel::LOW_WARNING_LEVEL;
+        if(data.PM_2_5 >= _globalState->configuration.PM2_5_Level_Alert) PresentingWeatherData.PMWarningLevel = WarningLevel::HI_WARNING_LEVEL;
+        else if(data.PM_2_5 >= _globalState->configuration.PM2_5_Level_Warning) PresentingWeatherData.PMWarningLevel = WarningLevel::WARNING;
+        else if(data.PM_2_5 != -1) PresentingWeatherData.PMWarningLevel = WarningLevel::LOW_WARNING_LEVEL;
        
         auto gasAirPollution = data.calculateGasAirPollution();
-        if(gasAirPollution >= _globalState->configuration.VOC_Percent_Level_Alert) PresentingIndoorWeatherData.VOCWarningLevel = WarningLevel::HI_WARNING_LEVEL;
-        else if(gasAirPollution >= _globalState->configuration.VOC_Percent_Level_Warning) PresentingIndoorWeatherData.VOCWarningLevel = WarningLevel::WARNING;
-        else if(gasAirPollution != -1) PresentingIndoorWeatherData.VOCWarningLevel = WarningLevel::LOW_WARNING_LEVEL;
+        if(gasAirPollution >= _globalState->configuration.VOC_Percent_Level_Alert) PresentingWeatherData.VOCWarningLevel = WarningLevel::HI_WARNING_LEVEL;
+        else if(gasAirPollution >= _globalState->configuration.VOC_Percent_Level_Warning) PresentingWeatherData.VOCWarningLevel = WarningLevel::WARNING;
+        else if(gasAirPollution != -1) PresentingWeatherData.VOCWarningLevel = WarningLevel::LOW_WARNING_LEVEL;
         
-        if(data.radiation >= _globalState->configuration.Radiation_Level_Critical) PresentingIndoorWeatherData.RadiationWarningLevel = WarningLevel::CRITICAL;
-        else if(data.radiation >= _globalState->configuration.Radiation_Level_Alert) PresentingIndoorWeatherData.RadiationWarningLevel = WarningLevel::HI_WARNING_LEVEL;
-        else if(data.radiation >= _globalState->configuration.Radiation_Level_Warning) PresentingIndoorWeatherData.RadiationWarningLevel = WarningLevel::WARNING;
-        else if(data.radiation != -1)PresentingIndoorWeatherData.RadiationWarningLevel = WarningLevel::LOW_WARNING_LEVEL;
+        if(data.radiation >= _globalState->configuration.Radiation_Level_Critical) PresentingWeatherData.RadiationWarningLevel = WarningLevel::CRITICAL;
+        else if(data.radiation >= _globalState->configuration.Radiation_Level_Alert) PresentingWeatherData.RadiationWarningLevel = WarningLevel::HI_WARNING_LEVEL;
+        else if(data.radiation >= _globalState->configuration.Radiation_Level_Warning) PresentingWeatherData.RadiationWarningLevel = WarningLevel::WARNING;
+        else if(data.radiation != -1)PresentingWeatherData.RadiationWarningLevel = WarningLevel::LOW_WARNING_LEVEL;
 
-         _onUpdateCallback(PresentingIndoorWeatherData);
+         _onUpdateCallback(PresentingWeatherData);
     }
 }

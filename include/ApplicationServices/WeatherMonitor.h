@@ -1,14 +1,14 @@
 #include "HardwareModules/HardwareRegistry.h"
 #include "GlobalObjects/GlobalState.h"
-#include "Models/IndoorWeatherData.h"
-#include "Models/PresentingIndoorWeatherData.h"
+#include "Models/WeatherMonitorData.h"
+#include "Models/PresentingWeatherData.h"
 #include <Ticker.h>
 #include "HardwareModules/Sensors/AirParticiplesSensor.h"
 #include "HardwareModules/Sensors/RadiationSensor.h"
 #include "HardwareModules/Sensors/MeteoSensor.h"
 #include <vector>
 
-typedef void (*WeatherMonitorUpdatedEventCallback)(PresentingIndoorWeatherData);
+typedef void (*WeatherMonitorUpdatedEventCallback)(PresentingWeatherData);
 
 class WeatherMonitor
 {
@@ -16,7 +16,7 @@ public:
     WeatherMonitor(HardwareRegistry* hardwareRegistry, GlobalState* globalState);
     void run();
     void updateTimers();
-    void addWeatherUpdatedEventHandler(WeatherMonitorUpdatedEventCallback callback);
+    void addUpdatedEventHandler(WeatherMonitorUpdatedEventCallback callback);
     void reconnectSensors();
     void resetSensors();
     enum class WeatherMonitorState {DISABLED, IDLE, MEASURING};
@@ -25,7 +25,7 @@ public:
 private:
     void startMeasuring();
     void finishMeasuring(bool runWithoutStart = false);
-    void registerWeatherData(IndoorWeatherData data);
+    void registerWeatherData(WeatherMonitorData data);
 
     GlobalState* _globalState;
 
@@ -37,5 +37,5 @@ private:
     RadiationSensor* _radiationSensor;
     MeteoSensor* _meteoSensor;
 
-    std::vector<IndoorWeatherData> _weatherMonitorHistoricalData;
+    std::vector<WeatherMonitorData> _weatherMonitorHistoricalData;
 };

@@ -5,8 +5,8 @@
 #include "UI/ScreenController.h"
 #include "UI/InputsController.h"
 #include "Models/Enums/View.h"
-#include "Models/PresentingIndoorWeatherData.h"
-#include "Models/PresentingOutdoorWeatherData.h"
+#include "Models/PresentingWeatherData.h"
+#include "Models/PresentingBackendWeatherData.h"
 #include "Models/Enums/NetworkStatus.h"
 #include <Ticker.h>
 
@@ -15,8 +15,8 @@ class UIController
 public:
     UIController(HardwareRegistry* HardwareRegistry, GlobalState* globalState);
     void updateUI();
-    void onPresentingIndoorWeatherDataUpdate(PresentingIndoorWeatherData presentingIndoorWeatherData);
-    void onPresentingOutdoorWeatherDataUpdate(PresentingOutdoorWeatherData presentingOutdoorWeatherData);
+    void onPresentingWeatherDataUpdate(PresentingWeatherData presentingWeatherData);
+    void onPresentingBackendWeatherDataUpdate(PresentingBackendWeatherData presentingBackendWeatherData);
     void onNetworkStatusChange(NetworkStatus networkStatus);
     void onBlocking(bool isBlocked);
     void registerRadiationHit();
@@ -30,7 +30,7 @@ private:
     void changeView(View view);
 
     void presentWeatherData();
-    void presentOutdoorWeatherData();
+    void presentBackendWeatherData();
 
     void updateScreensBrightness();
     void showRadiationHit();
@@ -47,8 +47,8 @@ private:
     Ticker* _oledIdleTimer;
     Ticker* _lightCheckTimer;
 
-    PresentingIndoorWeatherData _currentPresentingIndoorWeatherData;
-    PresentingOutdoorWeatherData _currentPresentingOutdoorWeatherData;
+    PresentingWeatherData _currentPresentingWeatherData;
+    PresentingBackendWeatherData _currentPresentingBackendWeatherData;
 
     View _currentView = View::STANDARD;
     bool _isSoundEnabled = true;

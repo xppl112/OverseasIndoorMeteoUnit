@@ -1,17 +1,17 @@
 #include <config.h>
 #include "GlobalObjects/GlobalState.h"
 #include "ApplicationServices/WeatherMonitor.h"
-#include "ApplicationServices/NetworkController.h"
+#include "ApplicationServices/BackendIntegrator.h"
 #include "ApplicationServices/UIController.h"
 
 GlobalState* globalState;
 HardwareRegistry* hardwareRegistry;
 WeatherMonitor* weatherMonitor;
-NetworkController* networkController;
+BackendIntegrator* backendIntegrator;
 UIController* uiController;
 
-void onPresentingIndoorWeatherUpdateEventHandler(PresentingIndoorWeatherData PresentingIndoorWeatherData);
-void onPresentingOutdoorWeatherUpdateEventHandler(PresentingOutdoorWeatherData PresentingOutdoorWeatherData);
+void onPresentingWeatherDataUpdateEventHandler(PresentingWeatherData PresentingWeatherData);
+void onPresentingBackendWeatherDataUpdateEventHandler(PresentingBackendWeatherData PresentingBackendWeatherData);
 void onNetworkStatusChangeEventHandler(NetworkStatus networkStatus);
 
 IRAM_ATTR void radiationSensorInterruptCallback() {
@@ -30,37 +30,29 @@ void setup() {
     globalState = new GlobalState();
     uiController = new UIController(hardwareRegistry, globalState);
     weatherMonitor = new WeatherMonitor(hardwareRegistry, globalState);
-    networkController = new NetworkController(globalState);
+    backendIntegrator = new BackendIntegrator(globalState);
 
-    weatherMonitor->addWeatherUpdatedEventHandler(onPresentingIndoorWeatherUpdateEventHandler);
+    weatherMonitor->addUpdatedEventHandler(onPresentingWeatherDataUpdateEventHandler);
     weatherMonitor->run();
 
-    networkController->addOutdoorWeatherUpdatedEventHandler(onPresentingOutdoorWeatherUpdateEventHandler);
-    networkController->addNetworkStatusChangedEventHandler(onNetworkStatusChangeEventHandler);
-    networkController->startListeningToOutdoorUnits();
+    backendIntegrator->addUpdatedEventHandler(onPresentingBackendWeatherDataUpdateEventHandler);
+    backendIntegrator->addNetworkStatusChangedEventHandler(onNetworkStatusChangeEventHandler);
 }
 
 void loop()
 {
+    //hardwareRegistry->healthCheck();
     uiController->updateUI();
     weatherMonitor->updateTimers();
-    networkController->loop();
 }
 
-void onPresentingIndoorWeatherUpdateEventHandler(PresentingIndoorWeatherData PresentingIndoorWeatherData){
-    static int updateCounter = 0;
-    uiController->onPresentingIndoorWeatherDataUpdate(PresentingIndoorWeatherData);
-
-    updateCounter++;
-    if (updateCounter >= 3) {
-        networkController->sendWeatherData(PresentingIndoorWeatherData.weatherMonitorHistoricalData.back());
-        updateCounter = 0;
-    }
+void onPresentingWeatherDataUpdateEventHandler(PresentingWeatherData PresentingWeatherData){
+    uiController->onPresentingWeatherDataUpdate(PresentingWeatherData);
+    backendIntegrator->sendWeatherData(PresentingWeatherData.weatherMonitorHistoricalData.back());
 }
 
-void onPresentingOutdoorWeatherUpdateEventHandler(PresentingOutdoorWeatherData PresentingOutdoorWeatherData){
-    uiController->onPresentingOutdoorWeatherDataUpdate(PresentingOutdoorWeatherData);
-    networkController->queueSendingWeatherData(PresentingOutdoorWeatherData.weatherData);
+void onPresentingBackendWeatherDataUpdateEventHandler(PresentingBackendWeatherData PresentingBackendWeatherData){
+    uiController->onPresentingBackendWeatherDataUpdate(PresentingBackendWeatherData);
 }
 
 void onNetworkStatusChangeEventHandler(NetworkStatus networkStatus){

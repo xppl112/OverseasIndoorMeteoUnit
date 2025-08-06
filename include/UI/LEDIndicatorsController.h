@@ -1,7 +1,7 @@
 #include "HardwareModules/HardwareRegistry.h"
 #include "HardwareModules/PCFExtender.h"
-#include "Models/PresentingIndoorWeatherData.h"
-#include "Models/PresentingOutdoorWeatherData.h"
+#include "Models/PresentingWeatherData.h"
+#include "Models/PresentingBackendWeatherData.h"
 #include "Models/Enums/View.h"
 #include "GlobalObjects/GlobalState.h"
 #include <Ticker.h>
@@ -12,8 +12,8 @@ class LEDIndicatorsController
 {
 public:
     LEDIndicatorsController(HardwareRegistry* hardwareRegistry, GlobalState* globalState);
-    void setWeatherStatus(PresentingIndoorWeatherData data);
-    void setWeatherStatus(PresentingOutdoorWeatherData data);
+    void setWeatherStatus(PresentingWeatherData data);
+    void setWeatherStatus(PresentingBackendWeatherData data);
     void setStandbyMode(bool isActive);
 
 private:

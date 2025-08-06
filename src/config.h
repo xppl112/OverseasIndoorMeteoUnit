@@ -1,6 +1,5 @@
 #include <Arduino.h>
 #include "PCF8575.h"
-#include <IPAddress.h>
 
 #ifndef CONFIG_H
 #define CONFIG_H
@@ -54,15 +53,8 @@ struct BackendClientConfig {
     const char* WifiPassword = "2A661A965E9E";
     const int WifiConnectionTimeout = 20;
 
-    const char* AP_SSID = "WeatherStationIndoorUnit";
-    const char* AP_Password = "AP1326AT";
-    IPAddress AP_IP = IPAddress(192, 168, 4, 1);
-    IPAddress AP_GATEWAY = IPAddress(192, 168, 4, 1);
-    IPAddress AP_SUBNET = IPAddress(255, 255, 255, 0);
-
     const char* ServerHost = "http://weather.liashko.online";
-    const char* ServerApiPostIndoorWeatherDataUrl = "/api/weather/PostOverseasIndoorReport";
-    const char* ServerApiPostOutdoorWeatherDataUrl = "/api/weather/PostOverseasReport";
+    const char* ServerApiPostWeatherDataUrl = "/api/weather/PostOverseasIndoorReport";
     const int HttpRequestTimeout = 10;
 };
 

@@ -79,20 +79,3 @@ HttpResponse EspWifiClient::sendPostJsonRequest(String host, String resource, St
     httpResponse.success = resultCode != -1 ? true : false;
     return httpResponse;
 }
-
-void EspWifiClient::startAccessPoint(
-    const char* ssid, 
-    const char* password, 
-    bool hidden,
-    IPAddress apIP,
-    IPAddress gateway,
-    IPAddress subnet
-) {
-    WiFi.mode(WIFI_AP);
-    WiFi.softAPConfig(apIP, gateway, subnet);
-    WiFi.softAP(ssid, password, 1, hidden);
-}
-
-void EspWifiClient::stopAccessPoint() {
-    WiFi.softAPdisconnect(true);
-}

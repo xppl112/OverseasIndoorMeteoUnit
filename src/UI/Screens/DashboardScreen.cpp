@@ -7,10 +7,10 @@ DashboardScreen::DashboardScreen(Adafruit_SSD1306* screen){
     _screen = screen;
 }
 
-void DashboardScreen::showWeatherData(PresentingIndoorWeatherData weatherData){
+void DashboardScreen::showWeatherData(PresentingWeatherData weatherData){
 
 }
 
-void DashboardScreen::showOutdoorWeatherData(PresentingOutdoorWeatherData outdoorWeatherData){
+void DashboardScreen::showBackendWeatherData(PresentingBackendWeatherData backendWeatherData){
 
 }
